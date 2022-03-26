@@ -1,7 +1,8 @@
 const express = require('express'); // we are requiring express module
 const path = require('path'); //requiring path module-- built in and no install needed
 const fs = require('fs'); // importing the package/module: fs -file system
-const res = require('express/lib/response');
+const res = require('express/lib/response'); //--do I need this?
+const uuid = require('./helpers/uuid'); // Helper method for generating unique ids
 
 const app = express();  //we take express and execute it--we get an express application
 const PORT = process.env.PORT || 3001; //set a const for a port number-- this will never change by denotting them in all CAPS
@@ -33,12 +34,45 @@ app.use(express.urlencoded({extended:true}));
 // You'll need to find a way to give each note a unique id when it's saved (look into npm packages that could do this for you).
 
 app.post('/api/notes', (req, res) => {
+  console.info(`${req.method} request received to add a review`);
+  const { title, text  } = req.body;
+  if (title && text) {
+    // Variable for the object we will save
+    const newNote = {
+      title,
+      text,
+      // upvotes: Math.floor(Math.random() * 100),
+      note_id: uuid(),
+    };
+
+    const noteString = JSON.stringify(newNote, null, 2);  //null and 2 are formatted styles when fs file is returned
+
+    fs.writeFile(`./db/${newNote.title}.json`, noteString, (err) =>
+    err
+      ? console.error(err)
+      : console.log(
+          `${newNote.title} has been written to JSON file`
+        )
+  );
+
+  const response = {
+    status: 'success',
+    body: newNote,
+  };
+
+  console.log(response);
+  res.status(201).json(response);
+} else {
+  res.status(500).json('Error in saving note');
+}
+});
+
   // console.log(req.body)
   // save each one to its own variable, from req.body you need to pull then create another variable that stores note and append it 
 // res.
   // write to file takes in 2 arguments  traverse into dv and db.json
 //add new note to the array
-});
+
 
 // ******************************************************BELOW IS GET API****************************
 // TO DO: 
