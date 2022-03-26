@@ -10,11 +10,11 @@ const PORT = process.env.PORT || 3001; //set a const for a port number-- this wi
 app.use(express.static('public'));  // --without this it will not display on  the local host-middleware-what happens in between request and responses on express server. we are telling the app to serve a static directory called public--this will allow and expose the html files as public info on internet
 
 // Sets up the Express app to handle data parsing
-app.use(express.json()); 
-app.use(express.urlencoded({extended:true}));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // generates unique ids
-const uuid = 
+const uuid =
   Math.floor((1 + Math.random()) * 0x10000)
     .toString(16)
     .substring(1);
@@ -40,7 +40,7 @@ const uuid =
 
 app.post('/api/notes', (req, res) => {
   console.info(`${req.method} request received to add a review`);
-  const { title, text  } = req.body;
+  const { title, text } = req.body;
   if (title && text) {
     // Variable for the object we will save
     const saveNote = {
@@ -53,29 +53,29 @@ app.post('/api/notes', (req, res) => {
     const noteString = JSON.stringify(saveNote, null, 2);  //null and 2 are formatted styles when fs file is returned
 
     fs.writeFile(`./db/${saveNote.title}.json`, noteString, (err) =>
-    err
-      ? console.error(err)
-      : console.log(
+      err
+        ? console.error(err)
+        : console.log(
           `${saveNote.title} has been written to JSON file`
         )
-  );
+    );
 
-  const response = {
-    status: 'success',
-    body: saveNote,
-  };
+    const response = {
+      status: 'success',
+      body: saveNote,
+    };
 
-  console.log(response);
-  res.status(201).json(response);
-} else {
-  res.status(500).json('Error in saving note');
-}
+    console.log(response);
+    res.status(201).json(response);
+  } else {
+    res.status(500).json('Error in saving note');
+  }
 });
 
-  // console.log(req.body)
-  // save each one to its own variable, from req.body you need to pull then create another variable that stores note and append it 
+// console.log(req.body)
+// save each one to its own variable, from req.body you need to pull then create another variable that stores note and append it 
 // res.
-  // write to file takes in 2 arguments  traverse into dv and db.json
+// write to file takes in 2 arguments  traverse into dv and db.json
 //add new note to the array
 
 
@@ -83,27 +83,54 @@ app.post('/api/notes', (req, res) => {
 // TO DO: 
 // (retrieve note data from a JSON file)-- read file
 
-       //1.   GET /api/notes should read the db.json file and return all saved notes as JSON.
-// app.get('/api/notes', (req, res) => {
-  // RETURN ALL THE NOTES
-
-//   fs.readFile('./db/db.json', )
-// })
-
-
-
+//1.   GET /api/notes should read the db.json file and return all saved notes as JSON.
+// RETURN ALL THE NOTES
+app.get('/api/notes', (req, res) => {
+  fs.readFile('./db/db.json', 'utf-8', function(err, data){
+  console.log('it works!!', JSON.parse(data)
+  )
+})
 
 
+    // Send a message to the client
+    res.json(`${req.method} request received to get notes`);
+    
+    // Log our request to the terminal
+    console.info(`${req.method} request received to get notes`);
+    
+  });
+  //   res.json(JSON.parse(data))
+  //   });
 
-//TO DO: return the notes file
-app.get('/notes', (req, res) => {
-  res.sendFile(path.join(__dirname, '/public/notes.html'));
-});
+  // })
 
-//TO DO: return the index.html file
-app.get('*',(req, res) => {
+
+
+//   const readAndAppend = (title, text) => {
+//     fs.readFile(file, 'utf8', (err, data) => {
+//       if (err) {
+//         console.error(err);
+//       } else {
+//         const parsedData = JSON.parse(data); //save to a variable
+//         parsedData.push(content); //push into an array
+//         saveNote(text, parsedData); //write a file
+//       }
+//     });
+//   };
+// });
+  // readAndAppend(saveNote, './db/feedback.json');
+
+
+  // TO DO: return the notes file
+  app.get('/notes', (req, res) => {
+    res.sendFile(path.join(__dirname, '/public/notes.html'));
+  });
+
+  //TO DO: return the index.html file
+  app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/index.html'));
-});
-app.listen(PORT, () =>
-  console.log(`Example app listening at http://localhost:${PORT}`)
+  });
+
+  app.listen(PORT, () =>
+    console.log(`Example app listening at http://localhost:${PORT}`)
 );
