@@ -2,7 +2,7 @@ const express = require('express'); // we are requiring express module
 const path = require('path'); //requiring path module-- built in and no install needed
 const fs = require('fs'); // importing the package/module: fs -file system
 const res = require('express/lib/response'); //--do I need this?
-const uuid = require('./helpers/uuid'); // Helper method for generating unique ids
+// const uuid = require('./helpers/uuid'); // Helper method for generating unique ids
 
 const app = express();  //we take express and execute it--we get an express application
 const PORT = process.env.PORT || 3001; //set a const for a port number-- this will never change by denotting them in all CAPS
@@ -13,6 +13,11 @@ app.use(express.static('public'));  // --without this it will not display on  th
 app.use(express.json()); 
 app.use(express.urlencoded({extended:true}));
 
+// generates unique ids
+const uuid = 
+  Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
 
 // 1. WHEN I click on the Save icon
 // 2. THEN the new note I have entered is saved and appears in the left-hand column with the other existing notes
@@ -38,26 +43,26 @@ app.post('/api/notes', (req, res) => {
   const { title, text  } = req.body;
   if (title && text) {
     // Variable for the object we will save
-    const newNote = {
+    const saveNote = {
       title,
       text,
       // upvotes: Math.floor(Math.random() * 100),
-      note_id: uuid(),
+      note_id: uuid,
     };
 
-    const noteString = JSON.stringify(newNote, null, 2);  //null and 2 are formatted styles when fs file is returned
+    const noteString = JSON.stringify(saveNote, null, 2);  //null and 2 are formatted styles when fs file is returned
 
-    fs.writeFile(`./db/${newNote.title}.json`, noteString, (err) =>
+    fs.writeFile(`./db/${saveNote.title}.json`, noteString, (err) =>
     err
       ? console.error(err)
       : console.log(
-          `${newNote.title} has been written to JSON file`
+          `${saveNote.title} has been written to JSON file`
         )
   );
 
   const response = {
     status: 'success',
-    body: newNote,
+    body: saveNote,
   };
 
   console.log(response);
