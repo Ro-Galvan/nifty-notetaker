@@ -30,15 +30,22 @@ const uuid =
 //1.   GET /api/notes should read the db.json file and return all saved notes as JSON.
 // RETURN ALL THE NOTES
 app.get('/api/notes', (req, res) => {
-  fs.readFile('./db/db.json', 'utf-8', function(err, data){   //***might need to do JSON.parse around readfile not console log it
+  fs.readFile('./db/db.json', 'utf-8', (err, data) => { 
+    if (err) {
+      console.error(err);
+    } else {
+      // Convert string into JSON object
+      res.json(JSON.parse(data))
+    }
+      //***might need to do JSON.parse around readfile not console log it
     // res.json(JSON.parse(data))
     // console.log('not working', JSON.parse(data)
-    console.log(JSON.parse(data));
+    // console.log(JSON.parse(data));
     // Sending all reviews to the client
     
 });
     // Send a message to the client
-    res.json(`${req.method} request received to get notes`);
+    // res.json(`${req.method} request received to get notes`);
     
     // Log our request to the terminal
     console.info(`${req.method} request received to get notes`);
@@ -90,13 +97,17 @@ app.post('/api/notes', (req, res) => {
   const { title, text } = req.body; //activity 17
   if (title && text) {
     // Variable for the object we will save
-    const saveNote = {
+    const saveNote = [{
       title,
       text,
       note_id: uuid,
-    };
+    }];
     const noteString = JSON.stringify(saveNote);  // (saveNote, null, 2); null and 2 are formatted styles when fs file is returned
-
+    
+    // const note = JSON.parse(data);
+    // // Add a new review
+    // note.push(saveNote);
+    
     fs.writeFile('./db/db.json', noteString, (err) =>
       err
         ? console.error(err)
