@@ -37,11 +37,6 @@ app.get('/api/notes', (req, res) => {
       // Convert string into JSON object
       res.json(JSON.parse(data))
     }
-      //***might need to do JSON.parse around readfile not console log it
-    // res.json(JSON.parse(data))
-    // console.log('not working', JSON.parse(data)
-    // console.log(JSON.parse(data));
-    // Sending all reviews to the client
     
 });
     // Send a message to the client
@@ -51,9 +46,7 @@ app.get('/api/notes', (req, res) => {
     console.info(`${req.method} request received to get notes`);
     
   });
-  //   });
-
-  // })
+  
 
 
 
@@ -70,15 +63,6 @@ app.get('/api/notes', (req, res) => {
 //   };
 // });
   // readAndAppend(saveNote, './db/feedback.json');
-
-// 1. WHEN I click on the Save icon
-// 2. THEN the new note I have entered is saved and appears in the left-hand column with the other existing notes
-
-// 3. WHEN I click on an existing note in the list in the left-hand column
-// 4. THEN that note appears in the right-hand column
-
-// 5. WHEN I click on the Write icon in the navigation at the top of the page
-// 6. THEN I am presented with empty fields to enter a new note title and the note’s text in the right-hand column
 
     // ******************************************************BELOW IS POST (send notes) API****************************
 
@@ -127,15 +111,6 @@ app.post('/api/notes', (req, res) => {
     res.status(500).json('Error in saving note');
   }
 });
-
-// console.log(req.body)
-// save each one to its own variable, from req.body you need to pull then create another variable that stores note and append it 
-// res.
-// write to file takes in 2 arguments  traverse into dv and db.json
-//add new note to the array
-
-
-
   // TO DO: return the HTML routes: notes file
   app.get('/notes', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/notes.html'));
