@@ -81,32 +81,42 @@ app.post('/api/notes', (req, res) => {
   const { title, text } = req.body; //activity 17
   if (title && text) {
     // Variable for the object we will save
-    const saveNote = [{
+    const saveNote = {
       title,
       text,
       note_id: uuid,
-    }];
-    const noteString = JSON.stringify(saveNote);  // (saveNote, null, 2); null and 2 are formatted styles when fs file is returned
+    };
+    fs.readFile('./db/db.json', 'utf-8', (err, data) => { 
+      if (err) {
+        console.error(err);
+      } else {
+        // Convert string into JSON object
+        const parsedData = JSON.parse(data); //save to a variable  //parseddata is what is currently in db file
+        parsedData.push(saveNote);
+        // console.log('pushed worked',parsedData);
+        fs.writeFile('./db/db.json', JSON.stringify(parsedData), (err) =>
+          err
+            ? console.error(err)
+            : console.log(
+              `note titled: ${saveNote.title} has been POSTED to JSON file` //savenote,title is coming back as undefined 
+            )
+        );
     
+        const response = {
+          status: 'success',
+          body: saveNote,
+        };
+    
+        console.log(response);
+        res.status(201).json(response);
+      }
+    });
+    // const noteString = JSON.stringify(saveNote);  // (saveNote, null, 2); null and 2 are formatted styles when fs file is returned
+    //read  file method  the from db here - the array in save note will not be need then
     // const note = JSON.parse(data);
-    // // Add a new review
+    // Add a new review
     // note.push(saveNote);
     
-    fs.writeFile('./db/db.json', noteString, (err) =>
-      err
-        ? console.error(err)
-        : console.log(
-          `note titled: ${saveNote.title} has been POSTED to JSON file`
-        )
-    );
-
-    const response = {
-      status: 'success',
-      body: saveNote,
-    };
-
-    console.log(response);
-    res.status(201).json(response);
   } else {
     res.status(500).json('Error in saving note');
   }
