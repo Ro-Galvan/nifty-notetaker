@@ -13,21 +13,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // importing the package/module: fs -file system
 const fs = require('fs'); 
-// const notes = require('./db/db.json'); //--do I need this? can use to call each note using req.params,'/api/notes/:title' & with a for loop
-
-// const uuid = require('./helpers/uuid'); // Helper method for generating unique ids
 // generates unique ids
 const uuid =
   Math.floor((1 + Math.random()) * 0x10000)
     .toString(16)
     .substring(1);
 
-
     // ******************************************************BELOW IS GET (receive saved notes) API****************************
-// TO DO: 
-// (retrieve note data from a JSON file)-- read file
 
-//1.   GET /api/notes should read the db.json file and return all saved notes as JSON.
 // RETURN ALL THE NOTES
 app.get('/api/notes', (req, res) => {
   fs.readFile('./db/db.json', 'utf-8', (err, data) => { 
@@ -37,45 +30,13 @@ app.get('/api/notes', (req, res) => {
       // Convert string into JSON object
       res.json(JSON.parse(data))
     }
-    
 });
-    // Send a message to the client
-    // res.json(`${req.method} request received to get notes`);
-    
     // Log our request to the terminal
     console.info(`${req.method} request received to get notes`);
-    
+
   });
-  
-
-
-
-//   const readAndAppend = (title, text) => {
-//     fs.readFile(file, 'utf8', (err, data) => {
-//       if (err) {
-//         console.error(err);
-//       } else {
-//         const parsedData = JSON.parse(data); //save to a variable
-//         parsedData.push(content); //push into an array
-//         saveNote(text, parsedData); //write a file
-//       }
-//     });
-//   };
-// });
-  // readAndAppend(saveNote, './db/feedback.json');
 
     // ******************************************************BELOW IS POST (send notes) API****************************
-
-
-// TO DO: The following API routes should be created: 
-
-// This application will use an Express.js back end and will 
-// (save note to JSON file)  WRITE it
-
-// 1.  POST /api/notes should receive a new note to save on the request body, 
-// add it to the db.json file, and then return the new note to the client. 
-// You'll need to find a way to give each note a unique id when it's saved (look into npm packages that could do this for you).
-
 app.post('/api/notes', (req, res) => {
   console.info(`${req.method} request received to add a note`);
   const { title, text } = req.body; //activity 17
@@ -91,17 +52,16 @@ app.post('/api/notes', (req, res) => {
         console.error(err);
       } else {
         // Convert string into JSON object
-        const parsedData = JSON.parse(data); //save to a variable  //parseddata is what is currently in db file
+        const parsedData = JSON.parse(data); //parseddata is what is currently in db file
         parsedData.push(saveNote);
         // console.log('pushed worked',parsedData);
-        fs.writeFile('./db/db.json', JSON.stringify(parsedData), (err) =>
+        fs.writeFile('./db/db.json', JSON.stringify(parsedData, null, 2), (err) =>
           err
             ? console.error(err)
             : console.log(
-              `note titled: ${saveNote.title} has been POSTED to JSON file` //savenote,title is coming back as undefined 
+              `note titled: ${saveNote.title} has been POSTED to JSON file` 
             )
         );
-    
         const response = {
           status: 'success',
           body: saveNote,
@@ -111,11 +71,6 @@ app.post('/api/notes', (req, res) => {
         res.status(201).json(response);
       }
     });
-    // const noteString = JSON.stringify(saveNote);  // (saveNote, null, 2); null and 2 are formatted styles when fs file is returned
-    //read  file method  the from db here - the array in save note will not be need then
-    // const note = JSON.parse(data);
-    // Add a new review
-    // note.push(saveNote);
     
   } else {
     res.status(500).json('Error in saving note');
