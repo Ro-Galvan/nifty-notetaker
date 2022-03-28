@@ -5,7 +5,7 @@
 
   Currently the notes are not able to be deleted but this is something I will work on in the future. 
 
-[link to deployed Heroku app](https://morning-wildwood-40959.herokuapp.com/notes)
+[link to deployed Heroku app](https://morning-wildwood-40959.herokuapp.com/)
 
 [link to GitHub repository](https://github.com/Ro-Galvan/nifty-notetaker)
 
