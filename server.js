@@ -45,7 +45,7 @@ app.post('/api/notes', (req, res) => {
     const saveNote = {
       title,
       text,
-      note_id: uuid,
+      id: uuid,
     };
     fs.readFile('./db/db.json', 'utf-8', (err, data) => { 
       if (err) {
